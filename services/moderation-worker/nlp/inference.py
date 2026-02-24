@@ -70,8 +70,9 @@ class ModerationInference:
         self.tokenizer = None
         self.model = None
         
-        self.sentiment_labels = ['positive', 'neutral', 'negative']
-        self.moderation_labels = ['allowed', 'review', 'reject']
+        # UIT-NLP Model Labels mapping
+        self.id2label = {0: 'clean', 1: 'offensive', 2: 'hate'}
+        self.label2id = {'clean': 0, 'offensive': 1, 'hate': 2}
         
         self.load_model()
     
@@ -373,9 +374,41 @@ class ModerationInference:
         # Severe insults (với context awareness)
         intelligence_insults = {'ngu', 'ngu ngốc', 'ngu người', 'đần', 'đần độn', 'ngớ ngẩn', 'stupid', 'idiot', 'moron', 'dumb'}
         
+        # CRITICAL: Vietnamese words that CONTAIN "ngu" but are NOT insults
+        # These are common words/names where \b pattern incorrectly matches
+        ngu_safe_words = {
+            'nguyễn', 'nguyen', 'nguyên', 'nguyển', 'nguyện', 'nguyệt',
+            'người', 'những', 'nguồn', 'ngủ', 'ngũ', 'nguội', 'ngước',
+            'ngựa', 'ngứa', 'ngụ', 'ngư', 'nguy', 'nguội',
+            'nguyễn thị', 'nguyễn văn', 'nguyễn ngọc', 'nguyễn minh', 'nguyễn hữu',
+        }
+        
         for word in SEVERE_INSULTS:
             pattern = r'\b' + re.escape(word) + r'\b'
-            if re.search(pattern, normalized_text, re.IGNORECASE):
+            match = re.search(pattern, normalized_text, re.IGNORECASE)
+            if match:
+                # CRITICAL FIX: Check if "ngu" match is actually part of a larger word
+                # Vietnamese diacritics can break word boundaries
+                if word == 'ngu':
+                    # Check if any safe word containing "ngu" is in the text
+                    is_part_of_safe_word = False
+                    for safe_word in ngu_safe_words:
+                        if safe_word in normalized_text:
+                            is_part_of_safe_word = True
+                            break
+                    
+                    # Also check the actual text around the match
+                    start, end = match.span()
+                    # Check if there are more Vietnamese letters after "ngu"
+                    if end < len(normalized_text):
+                        next_char = normalized_text[end]
+                        # Vietnamese letters that commonly follow "ngu" in legitimate words
+                        if next_char in 'yễơờởỡợủũụưừứửữựiịìíỉĩôồốộổỗơ':
+                            is_part_of_safe_word = True
+                    
+                    if is_part_of_safe_word:
+                        continue  # Skip - this is part of a legitimate word
+                
                 # Allow opinion criticism (e.g., "quan điểm ngu si")
                 if context_flags['is_opinion_criticism'] and word in intelligence_insults:
                     continue  # Skip - allowed
@@ -502,17 +535,27 @@ class ModerationInference:
         try:
             logger.info(f"Loading model from {self.model_path}")
             
-            # Check if local path exists
-            if os.path.exists(self.model_path):
+            # Ưu tiên load model "chính chủ" đã fine-tune (nếu có)
+            custom_model_path = '/app/models/custom_phobert'
+            
+            if os.path.exists(custom_model_path):
+                logger.info(f"Loading CUSTOM FINE-TUNED model from {custom_model_path}")
+                self.tokenizer = AutoTokenizer.from_pretrained(custom_model_path)
+                self.model = AutoModelForSequenceClassification.from_pretrained(
+                    custom_model_path,
+                    num_labels=3
+                )
+            elif os.path.exists(self.model_path):
                 logger.info("Loading from local path")
                 self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
                 self.model = AutoModelForSequenceClassification.from_pretrained(
-                    self.model_path,
-                    num_labels=3  # positive, neutral, negative
+                    self.model_path
+                    # AutoConfig will usually handle num_labels for fine-tuned models
                 )
             else:
                 # Download from HuggingFace
-                logger.info("Downloading model from HuggingFace")
+                # Fallback về model gốc ổn định nhất
+                logger.info(f"Downloading model {self.model_path} from HuggingFace")
                 self.tokenizer = AutoTokenizer.from_pretrained('vinai/phobert-base-v2')
                 self.model = AutoModelForSequenceClassification.from_pretrained(
                     'vinai/phobert-base-v2',
@@ -661,7 +704,7 @@ class ModerationInference:
                 'sentiment_score': sentiment_result['score']
             }
         
-        # Fall back to ML model for ambiguous cases
+        # Fall back to ML model (PhoBERT Fine-tuned) for ambiguous cases
         # Preprocess
         preprocessed_text = preprocess_vietnamese_text(text)
         
@@ -685,16 +728,39 @@ class ModerationInference:
             confidence, predicted = torch.max(probs, dim=-1)
         
         # Get results
-        sentiment = self.sentiment_labels[predicted.item()]
+        predicted_idx = predicted.item()
+        predicted_label = self.id2label.get(predicted_idx, 'clean') # 0: clean, 1: offensive, 2: hate
         confidence_score = confidence.item()
         
-        # Determine moderation result
-        moderation = self._determine_moderation(sentiment, confidence_score)
-        reasoning = self._generate_reasoning(sentiment, moderation, confidence_score)
+        # === INTEGRATION LOGIC: Map Hate Speech Labels to Moderation Actions ===
         
+        # Label 0: Clean -> Allowed
+        # Label 1: Offensive -> Review (or Reject if high confidence)
+        # Label 2: Hate -> Reject
+        
+        moderation_result = 'allowed'
+        reasoning = 'Content is safe'
+        
+        if predicted_label == 'hate':
+            moderation_result = 'reject'
+            reasoning = f'Hate speech detected by AI ({confidence_score:.2%} confidence)'
+        
+        elif predicted_label == 'offensive':
+            if confidence_score > 0.85:
+                 moderation_result = 'reject'
+                 reasoning = f'Highly offensive content detected ({confidence_score:.2%} confidence)'
+            else:
+                 moderation_result = 'review'
+                 reasoning = f'Offensive content detected, needs review ({confidence_score:.2%} confidence)'
+        
+        else: # clean
+             moderation_result = 'allowed'
+             reasoning = f'Clean content ({confidence_score:.2%} confidence)'
+
         return {
-            'sentiment': sentiment,
-            'moderation_result': moderation,
+            'sentiment': 'negative' if predicted_label in ['hate', 'offensive'] else 'neutral', # Legacy field support
+            'model_label': predicted_label,
+            'moderation_result': moderation_result,
             'confidence': round(confidence_score, 4),
             'reasoning': reasoning,
             'flagged_words': []

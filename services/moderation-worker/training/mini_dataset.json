@@ -1,0 +1,182 @@
+[
+    {
+        "text": "sản phẩm tuyệt vời, dùng rất thích",
+        "label": "clean"
+    },
+    {
+        "text": "cảm ơn shop đã tư vấn nhiệt tình",
+        "label": "clean"
+    },
+    {
+        "text": "món này ăn ngon nhưng hơi cay",
+        "label": "clean"
+    },
+    {
+        "text": "giao hàng hơi chậm nha shop",
+        "label": "clean"
+    },
+    {
+        "text": "tôi thấy không hài lòng về chất lượng",
+        "label": "clean"
+    },
+    {
+        "text": "đóng gói cẩn thận, cho 5 sao",
+        "label": "clean"
+    },
+    {
+        "text": "mọi người ơi cho mình hỏi cái này",
+        "label": "clean"
+    },
+    {
+        "text": "giá hơi cao so với mặt bằng chung",
+        "label": "clean"
+    },
+    {
+        "text": "chúc mọi người buổi sáng tốt lành",
+        "label": "clean"
+    },
+    {
+        "text": "hàng đẹp như hình, rất đáng tiền",
+        "label": "clean"
+    },
+    {
+        "text": "con chó này mày bị điên à",
+        "label": "offensive"
+    },
+    {
+        "text": "đồ ngu không biết gì thì im đi",
+        "label": "offensive"
+    },
+    {
+        "text": "nhìn cái mặt mày là muốn đấm",
+        "label": "offensive"
+    },
+    {
+        "text": "nói chuyện ngu như bò",
+        "label": "offensive"
+    },
+    {
+        "text": "thằng này bị khùng rồi",
+        "label": "offensive"
+    },
+    {
+        "text": "mày câm mồm lại đi thằng ranh con",
+        "label": "offensive"
+    },
+    {
+        "text": "đụ má mày làm ăn kiểu gì vậy",
+        "label": "offensive"
+    },
+    {
+        "text": "cái đkm nhà mày",
+        "label": "offensive"
+    },
+    {
+        "text": "biến đi cho khuất mắt tao",
+        "label": "offensive"
+    },
+    {
+        "text": "thằng súc vật này",
+        "label": "offensive"
+    },
+    {
+        "text": "bọn da đen bẩn thỉu cút về nước đi",
+        "label": "hate"
+    },
+    {
+        "text": "lũ mọi đen bẩn thỉu",
+        "label": "hate"
+    },
+    {
+        "text": "chết hết đi bọn tàu khựa",
+        "label": "hate"
+    },
+    {
+        "text": "bọn gay lọ bệnh hoạn tởm lợm",
+        "label": "hate"
+    },
+    {
+        "text": "giết hết lũ đồng tính đi",
+        "label": "hate"
+    },
+    {
+        "text": "bắc kỳ chó cút về bắc đi",
+        "label": "hate"
+    },
+    {
+        "text": "nam kỳ mọi miên ngu dốt",
+        "label": "hate"
+    },
+    {
+        "text": "bọn hồi giáo toàn lũ khủng bố",
+        "label": "hate"
+    },
+    {
+        "text": "phụ nữ chỉ nên ở nhà đừng đi làm",
+        "label": "hate"
+    },
+    {
+        "text": "đàn bà là cái thứ ăn bám vô dụng",
+        "label": "hate"
+    },
+    {
+        "text": "spam tin nhắn làm phiền vãi",
+        "label": "clean"
+    },
+    {
+        "text": "tôi ghét trời mưa",
+        "label": "clean"
+    },
+    {
+        "text": "con chó nhà mình dễ thương lắm",
+        "label": "clean"
+    },
+    {
+        "text": "bạn có bị điên không mà làm thế",
+        "label": "clean"
+    },
+    {
+        "text": "đừng hiểu lầm ý tôi nha",
+        "label": "clean"
+    },
+    {
+        "text": "giao hàng như cc",
+        "label": "offensive"
+    },
+    {
+        "text": "làm ăn như cái lồn",
+        "label": "offensive"
+    },
+    {
+        "text": "shop lừa đảo chó chết",
+        "label": "offensive"
+    },
+    {
+        "text": "đồ lừa đảo mất dạy",
+        "label": "offensive"
+    },
+    {
+        "text": "thứ rác rưởi không đáng một xu",
+        "label": "offensive"
+    },
+    {
+        "text": "bọn lgbt là lũ quái thai",
+        "label": "hate"
+    },
+    {
+        "text": "bọn chuyển giới nhìn tởm quá",
+        "label": "hate"
+    },
+    {
+        "text": "cần loại bỏ bọn da đen ra khỏi xã hội",
+        "label": "hate"
+    },
+    {
+        "text": "lũ 3 que bán nước",
+        "label": "hate"
+    },
+    {
+        "text": "bọn phản động này phải tử hình",
+        "label": "hate"
+    }
+]

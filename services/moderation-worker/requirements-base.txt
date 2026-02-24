@@ -1,0 +1,11 @@
+# Heavy ML dependencies - rarely change
+# These are installed first to utilize Docker cache
+numpy==1.26.4
+torch==2.1.1
+transformers==4.35.2
+onnxruntime==1.16.3
+optimum[onnxruntime]==1.15.0
+underthesea==6.7.0
+openai-whisper==20231117
+librosa==0.10.1
+easyocr==1.7.1

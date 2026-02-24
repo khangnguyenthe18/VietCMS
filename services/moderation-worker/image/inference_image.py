@@ -47,31 +47,31 @@ CRITICAL_VULGAR_EXACT = {
 OCR_TOXIC_PATTERNS = []
 
 # ==================== OCR CONFIGURATION ====================
-# Use OpenRouter Vision API as primary OCR (more accurate)
-# Falls back to EasyOCR if OpenRouter unavailable
+# Use OCR.space API as primary OCR (free, supports Vietnamese)
+# Falls back to EasyOCR if OCR.space unavailable
 
 import os
 
-# Check if OpenRouter OCR should be used
-USE_OPENROUTER_OCR = os.getenv('USE_OPENROUTER_OCR', 'true').lower() == 'true'
-OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY', '')
+# Check which OCR service to use
+USE_OCRSPACE_OCR = os.getenv('USE_OCRSPACE_OCR', 'true').lower() == 'true'
+OCRSPACE_API_KEY = os.getenv('OCRSPACE_API_KEY', 'helloworld')  # Free default key
 
-# OpenRouter Vision OCR instance
-_openrouter_ocr = None
+# OCR.space Vision OCR instance
+_ocrspace_ocr = None
 
-def get_openrouter_ocr():
-    """Get OpenRouter Vision OCR instance"""
-    global _openrouter_ocr
-    if _openrouter_ocr is None and USE_OPENROUTER_OCR and OPENROUTER_API_KEY:
+def get_ocrspace_ocr():
+    """Get OCR.space Vision OCR instance"""
+    global _ocrspace_ocr
+    if _ocrspace_ocr is None and USE_OCRSPACE_OCR:
         try:
-            from .openrouter_vision import OpenRouterVisionOCR
-            logger.info("Initializing OpenRouter Vision OCR...")
-            _openrouter_ocr = OpenRouterVisionOCR(api_key=OPENROUTER_API_KEY)
-            logger.info("OpenRouter Vision OCR initialized successfully")
+            from .ocrspace_vision import OCRSpaceVision
+            logger.info("Initializing OCR.space Vision OCR...")
+            _ocrspace_ocr = OCRSpaceVision(api_key=OCRSPACE_API_KEY, language="auto")
+            logger.info("OCR.space Vision OCR initialized successfully")
         except Exception as e:
-            logger.error(f"Failed to initialize OpenRouter OCR: {e}")
-            _openrouter_ocr = False
-    return _openrouter_ocr if _openrouter_ocr else None
+            logger.error(f"Failed to initialize OCR.space OCR: {e}")
+            _ocrspace_ocr = False
+    return _ocrspace_ocr if _ocrspace_ocr else None
 
 # EasyOCR Reader - used as fallback
 _ocr_reader = None
@@ -283,22 +283,22 @@ class ImageModerationInference:
             str: Extracted text or empty string
         """
         
-        # ===== TRY OPENROUTER VISION API FIRST (More accurate) =====
-        openrouter_ocr = get_openrouter_ocr()
-        if openrouter_ocr:
+        # ===== TRY OCR.SPACE API FIRST (Free, supports Vietnamese) =====
+        ocrspace_ocr = get_ocrspace_ocr()
+        if ocrspace_ocr:
             try:
-                logger.info("[OCR] Using OpenRouter Vision API for text extraction...")
-                extracted_text = openrouter_ocr.extract_text(image)
+                logger.info("[OCR] Using OCR.space API for text extraction...")
+                extracted_text = ocrspace_ocr.extract_text(image)
                 
                 if extracted_text:
-                    logger.info(f"[OCR-OpenRouter] Extracted text: '{extracted_text}'")
+                    logger.info(f"[OCR-Space] Extracted text: '{extracted_text}'")
                     return extracted_text
                 else:
-                    logger.info("[OCR-OpenRouter] No text found in image")
+                    logger.info("[OCR-Space] No text found in image")
                     return ""
                     
             except Exception as e:
-                logger.warning(f"[OCR-OpenRouter] Failed: {e}, falling back to EasyOCR")
+                logger.warning(f"[OCR-Space] Failed: {e}, falling back to EasyOCR")
         
         # ===== FALLBACK TO EASYOCR =====
         logger.info("[OCR] Falling back to EasyOCR...")

@@ -1,0 +1,9 @@
+# Light app dependencies - may change more frequently
+langdetect==1.0.9
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+aio-pika==9.3.1
+python-dotenv==1.0.0
+Pillow==10.0.1
+requests==2.31.0
+soundfile==0.12.1

@@ -382,11 +382,27 @@ async def main():
     logger.info("Starting moderation worker (BATCH MODE)...")
     
     # Connect to RabbitMQ
-    connection = await aio_pika.connect_robust(
-        config.RABBITMQ_URL,
-        timeout=30,
-        heartbeat=600
-    )
+    # Connect to RabbitMQ with retry logic
+    connection = None
+    retries = 10
+    retry_delay = 5
+    
+    for attempt in range(retries):
+        try:
+            connection = await aio_pika.connect_robust(
+                config.RABBITMQ_URL,
+                timeout=30,
+                heartbeat=600
+            )
+            logger.info("Successfully connected to RabbitMQ")
+            break
+        except Exception as e:
+            logger.warning(f"Failed to connect to RabbitMQ (attempt {attempt+1}/{retries}): {e}")
+            if attempt == retries - 1:
+                logger.error("Max retries reached. Exiting.")
+                raise e
+            logger.info(f"Retrying in {retry_delay}s...")
+            await asyncio.sleep(retry_delay)
     channel = await connection.channel()
     
     # Set prefetch count higher to allow buffering

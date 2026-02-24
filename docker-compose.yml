@@ -147,15 +147,14 @@ services:
       - MODEL_DEVICE=${MODEL_DEVICE}
       - LOG_LEVEL=${LOG_LEVEL}
       - HF_HOME=/app/models
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - USE_OPENROUTER_OCR=${USE_OPENROUTER_OCR:-true}
+      - OCRSPACE_API_KEY=${OCRSPACE_API_KEY:-K82899048288957}
     depends_on:
       postgres:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
     volumes:
-      - model-cache:/app/models
+      - ./services/moderation-worker/models:/app/models  # Map local models folder for portability
       - ./services/moderation-worker:/app  # Mount source code for development (no rebuild needed)
     networks:
       - vietcms-net

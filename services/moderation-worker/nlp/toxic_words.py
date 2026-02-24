@@ -231,6 +231,12 @@ HATE_LGBTQ = [
     'gay đáng bị', 'gay cần phải', 'tiêu diệt gay',
     'đáng bị khinh thường', 'đáng bị khinh', 'đáng khinh thường',
     'đáng ghét', 'đáng chết', 'nên chết',
+    
+    # NEW: LGBT specific phrases (Auto-Reject)
+    'lgbt là tội lỗi', 'lgbt tội lỗi', 'lgbt la toi loi',
+    'lgbt là bệnh', 'lgbt là benh', 'lgbt bệnh hoạn',
+    'lgbt bị cấm', 'lgbt nên bị cấm', 'cấm lgbt',
+    'chống lgbt', 'anti lgbt', 'tẩy chay lgbt',
 ]
 
 # Racial/Ethnic Discrimination (SEVERE)  
@@ -441,9 +447,10 @@ TOXIC_PATTERNS = [
     
     # ===== HATE SPEECH PATTERNS =====
     # LGBTQ+ hate
-    r'\b(?:đồ|thằng|con|bọn)\s+(?:gay|đồng\s*tính|pê\s*đê|les)\b',
-    r'\bgay\s+(?:đáng|cần|nên)\s+(?:chết|ghét|khinh|bị)\b',
-    r'\b(?:đồng\s*tính|gay|les)\s+(?:bệnh\s*hoạn|đê\s*tiện|tởm\s*lợm)\b',
+    # LGBTQ+ hate
+    r'\b(?:đồ|thằng|con|bọn)\s+(?:lgbt|gay|đồng\s*tính|pê\s*đê|les|bê\s*đê)\b',
+    r'\b(?:lgbt|gay|đồng\s*tính|les)\s+(?:đáng|cần|nên|phải)\s+(?:chết|ghét|khinh|bị\s*cấm|loại\s*bỏ|tiêu\s*diệt)\b',
+    r'\b(?:lgbt|đồng\s*tính|gay|les)\s+(?:là)?\s*(?:bệnh|tội\s*lỗi|sai\s*trái|lệch\s*lạc|bất\s*thường|tởm|đê\s*tiện)\b',
     
     # Racism
     r'\b(?:đồ|thằng|con|bọn)\s+(?:tàu|khỉ\s*đen|mọi)\b',
@@ -465,6 +472,14 @@ TOXIC_PATTERNS = [
     r'\bn[gq]u\s+(?:như|thế|thí|vậy|không|quá|vcl|vl|người|xuẩn|si|vãi)',
     r'\bn[gq]u\s+(?:vãi|vl|vcl|vkl)\s*(?:l[oồ]n|cứt|chó)',
     r'(?:đầu|óc|não)\s+(?:lợn|chó|bò|đất|gối|cá\s*vàng|gà)',
+
+    # Added: Obfuscated 'ngu' (n.g.u, n-g-u)
+    r'\bn[\s\._\-]+[gq][\s\._\-]+u\b',
+    
+    # ===== RACISM / HATE SPEECH EXPANSION =====
+    # "bọn da đen bẩn thỉu", "cút về nước"
+    r'\b(?:bọn|lũ|thằng|con|đồ)\s+(?:da\s*đen|đen|nigg)\s+(?:bẩn|thỉu|tởm|hôi|mọi|ngu|cút)',
+    r'(?:cút|về)\s+(?:nước|rừng)\s+đi',
     
     # ===== THREATS =====
     r'(?:tao|tau|mình|tôi|t)\s+(?:giết|chém|đánh|đập|kill)\s+(?:mày|mi|m|cậu|bạn)',
@@ -521,6 +536,32 @@ ALLOWED_PHRASES = [
     'ngu ngốn',  # ngu ngốn vs ngu ngốc
     'cung cấp',  # cung vs cu
     'ngu cơ',    # ngủ cơ
+    
+    # ===== CRITICAL: Vietnamese proper names containing "ngu" =====
+    # These are SURNAMES and common names - MUST NOT be flagged!
+    'nguyễn',    # Most common Vietnamese surname (40% of population)
+    'nguyên',    # Common first name/word (e.g., Nguyên, nguyên nhân)
+    'nguyen',    # Romanized version of Nguyễn
+    'nguyển',    # Alternative spelling
+    'nguyện',    # Wish/prayer
+    'nguyệt',    # Moon
+    
+    # ===== Common Vietnamese words containing "ngu" =====
+    'người',     # Person - MOST COMMON WORD
+    'những',     # Those/some
+    'nguồn',     # Source
+    'ngủ',       # Sleep
+    'ngũ',       # Five (Sino-Vietnamese)
+    'nguội',     # Cool down
+    'ngước',     # Look up
+    'ngựa',      # Horse
+    'ngứa',      # Itchy
+    'ngụ',       # Reside
+    'ngư',       # Fishery
+    'ngư dân',   # Fisherman
+    'ngư nghiệp', # Fishing industry
+    'nguy',      # Danger
+    'nguy hiểm', # Dangerous
     
     # ===== Words mis-matched by "cặc" pattern =====
     # Pattern r'\bc[aăắằẳẵặâấầẩẫậáảãạặ@][ckpc]\b' matches "các", "cách", "cục", etc.

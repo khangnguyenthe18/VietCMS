@@ -112,6 +112,14 @@ HIGHLY_NEGATIVE = [
     'lừa đảo', 'scam', 'lừa gạt', 'gian lận',
     'không uy tín', 'mất uy tín', 'uy tín kém',
     'fraud', 'cheat', 'dishonest',
+    
+    # ===== INSULT WORDS (for sentiment detection, NOT moderation) =====
+    # These trigger NEGATIVE sentiment so the system shows correct sentiment
+    # even when the content is being flagged for moderation
+    'ngu', 'ngu ngốc', 'đồ ngu', 'thằng ngu', 'con ngu',
+    'ngu si', 'ngu xuẩn', 'ngu như bò', 'ngu như chó',
+    'đần', 'đần độn', 'ngớ ngẩn', 'khùng', 'điên', 'điên khùng',
+    'stupid', 'idiot', 'moron', 'dumb', 'fool', 'imbecile',
 ]
 
 # Moderate negativity

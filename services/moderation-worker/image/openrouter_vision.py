@@ -15,12 +15,12 @@ logger = logging.getLogger(__name__)
 # OpenRouter API Configuration
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
-# Free Vision Models (in order of preference - VERIFIED WORKING)
+# Free Vision Models - verified to support image input
 FREE_VISION_MODELS = [
-    "google/gemma-3-12b-it:free",            # VERIFIED WORKING - Good OCR for Vietnamese
-    "google/gemma-3-4b-it:free",             # Smaller Gemma fallback
-    "google/gemma-3-27b-it:free",            # Larger Gemma if available
-    "nvidia/llama-3.1-nemotron-70b-instruct:free",  # Fallback
+    "google/gemma-3-27b-it:free",             # Gemma 3 - supports vision
+    "google/gemma-3-12b-it:free",             # Gemma 3 smaller
+    "qwen/qwen-2.5-vl-7b-instruct:free",      # Qwen VL
+    "nvidia/nemotron-nano-2-vl:free",         # NVIDIA Nemotron for OCR
 ]
 
 
