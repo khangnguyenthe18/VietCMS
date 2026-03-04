@@ -1064,8 +1064,15 @@ class EnhancedRuleChecker:
         for f in all_findings:
             all_labels.update(f['labels'])
         
-        # Determine action - THREATS are always REJECT
-        if has_hate or has_severe or escalate_body_shaming or has_spam or has_threat:
+        # NEW: Escalation for any personal attack containing "ngu"
+        has_ngu_attack = any(
+            'ngu' in f.get('matched', '').lower()
+            and f['type'] in ('profanity', 'harassment', 'obfuscated_insult')
+            for f in all_findings
+        )
+        
+        # Determine action - THREATS and 'ngu' attacks are always REJECT
+        if has_hate or has_severe or escalate_body_shaming or has_spam or has_threat or has_ngu_attack:
             action = 'reject'
             confidence = 0.95
         elif has_pii:
@@ -1081,20 +1088,20 @@ class EnhancedRuleChecker:
         
         reasoning_parts = []
         if 'hate_speech' in types:
-            reasoning_parts.append('🚫 HATE SPEECH')
+            reasoning_parts.append(' HATE SPEECH')
         if 'threat' in types:
-            reasoning_parts.append('🚫 THREAT/VIOLENCE')
+            reasoning_parts.append(' THREAT/VIOLENCE')
         if 'harassment' in types or 'obfuscated_insult' in types:
             if escalate_body_shaming:
-                reasoning_parts.append('🚫 SEVERE HARASSMENT')
+                reasoning_parts.append(' SEVERE HARASSMENT')
             else:
-                reasoning_parts.append('⚠️ HARASSMENT')
+                reasoning_parts.append(' HARASSMENT')
         if 'profanity' in types:
-            reasoning_parts.append('⚠️ PROFANITY')
+            reasoning_parts.append(' PROFANITY')
         if 'spam' in types:
-            reasoning_parts.append('🚫 SPAM')
+            reasoning_parts.append(' SPAM')
         if 'pii' in types:
-            reasoning_parts.append('⚠️ PII DETECTED')
+            reasoning_parts.append(' PII DETECTED')
         
         reasoning = f"{', '.join(reasoning_parts)}: {', '.join(matched_items)}"
         
@@ -1213,10 +1220,10 @@ if __name__ == "__main__":
         )
         
         if result:
-            print(f"   ❌ VIOLATION: {result['reasoning']}")
+            print(f"    VIOLATION: {result['reasoning']}")
             print(f"   Action: {result['action']}, Labels: {result['labels']}")
             print(f"   Confidence: {result['confidence']:.2%}")
         else:
-            print(f"   ✅ CLEAN")
+            print(f"    CLEAN")
         
         print("-" * 60)

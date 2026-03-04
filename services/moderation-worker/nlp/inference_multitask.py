@@ -378,7 +378,7 @@ class MultiTaskModerationInference:
                 'severities': [SeverityLevel.SEVERE],
                 'action': 'reject',
                 'confidence': 0.95,
-                'reasoning': f'⚠️ Bypass filter detected: {", ".join(variant_words[:3])} (obfuscation)',
+                'reasoning': f' Bypass filter detected: {", ".join(variant_words[:3])} (obfuscation)',
                 'flagged_words': variant_words,
                 'method': 'rule_based_variant_detection',
                 'has_obfuscation': True
@@ -430,7 +430,7 @@ class MultiTaskModerationInference:
                     'severities': [SeverityLevel.SEVERE],
                     'action': 'reject',
                     'confidence': 0.98,
-                    'reasoning': f'🚫 HATE SPEECH confirmed: {", ".join(detected_hate[:3])}',
+                    'reasoning': f' HATE SPEECH confirmed: {", ".join(detected_hate[:3])}',
                     'flagged_words': detected_hate,
                     'method': 'rule_based_hate_speech_confirmed'
                 }
@@ -441,7 +441,7 @@ class MultiTaskModerationInference:
                     'severities': [SeverityLevel.SEVERE],
                     'action': 'reject',
                     'confidence': 0.95,
-                    'reasoning': f'🚫 HATE SPEECH: {", ".join(detected_hate[:3])}',
+                    'reasoning': f' HATE SPEECH: {", ".join(detected_hate[:3])}',
                     'flagged_words': detected_hate,
                     'method': 'rule_based_hate_speech'
                 }
@@ -452,7 +452,7 @@ class MultiTaskModerationInference:
                     'severities': [SeverityLevel.MODERATE],
                     'action': 'review',
                     'confidence': 0.75,
-                    'reasoning': f'⚠️ Potential hate speech: {", ".join(detected_hate[:3])}',
+                    'reasoning': f' Potential hate speech: {", ".join(detected_hate[:3])}',
                     'flagged_words': detected_hate,
                     'method': 'rule_based_hate_speech_review'
                 }
@@ -475,7 +475,7 @@ class MultiTaskModerationInference:
                 'severities': [SeverityLevel.SEVERE],
                 'action': 'reject',
                 'confidence': 0.9,
-                'reasoning': f'🚫 SEXUAL CONTENT: {", ".join(detected_sexual[:3])}',
+                'reasoning': f' SEXUAL CONTENT: {", ".join(detected_sexual[:3])}',
                 'flagged_words': detected_sexual,
                 'method': 'rule_based_sexual'
             }
@@ -503,7 +503,7 @@ class MultiTaskModerationInference:
                         'severities': [SeverityLevel.MILD],
                         'action': 'review',  # Review instead of reject
                         'confidence': 0.7,
-                        'reasoning': f'⚠️ Strong language in feedback: {", ".join(detected_critical[:3])}',
+                        'reasoning': f' Strong language in feedback: {", ".join(detected_critical[:3])}',
                         'flagged_words': detected_critical,
                         'method': 'rule_based_feedback_profanity',
                         'context_modifier': severity_modifier
@@ -515,7 +515,7 @@ class MultiTaskModerationInference:
                         'severities': [SeverityLevel.SEVERE],
                         'action': 'reject',
                         'confidence': 0.95,
-                        'reasoning': f'🚫 Personal attack: {", ".join(detected_critical[:3])}',
+                        'reasoning': f' Personal attack: {", ".join(detected_critical[:3])}',
                         'flagged_words': detected_critical,
                         'method': 'rule_based_personal_attack'
                     }
@@ -589,7 +589,7 @@ class MultiTaskModerationInference:
         triggered_indices = np.where(multi_label_preds == 1)[0]
         triggered_labels = [self.label_names[i] for i in triggered_indices]
         triggered_probs = [float(multi_label_probs[i]) for i in triggered_indices]
-        
+
         # If no labels triggered, it's clean
         if not triggered_labels:
             return {
@@ -599,7 +599,7 @@ class MultiTaskModerationInference:
                 'confidence': float(1 - multi_label_probs.max()),
                 'reasoning': 'Clean content, no violation',
                 'all_probabilities': {
-                    label: float(prob) 
+                    label: float(prob)
                     for label, prob in zip(self.label_names, multi_label_probs)
                 },
                 'method': 'ml_model'

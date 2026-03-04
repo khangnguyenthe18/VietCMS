@@ -671,19 +671,19 @@ class EnhancedModerationAnalyzer:
         # 5. Determine final action
         if context_result.intent == ContentIntent.HATE_SPEECH:
             action = 'reject'
-            reasoning = '🚫 HATE SPEECH detected'
+            reasoning = ' HATE SPEECH detected'
         elif context_result.is_legitimate_criticism and len(actual_flagged) == 0:
             action = 'allowed'
-            reasoning = '✅ Valid feedback/criticism'
+            reasoning = ' Valid feedback/criticism'
         elif calibrated_confidence >= 0.8 and len(actual_flagged) > 0:
             action = 'reject'
-            reasoning = f'⛔ Serious violation: {", ".join(actual_flagged[:3])}'
+            reasoning = f' Serious violation: {", ".join(actual_flagged[:3])}'
         elif calibrated_confidence >= 0.5 and len(actual_flagged) > 0:
             action = 'review'
-            reasoning = f'⚠️ Review needed: {", ".join(actual_flagged[:3])}'
+            reasoning = f' Review needed: {", ".join(actual_flagged[:3])}'
         else:
             action = 'allowed'
-            reasoning = '✅ Acceptable content'
+            reasoning = ' Acceptable content'
         
         return {
             'action': action,
@@ -763,5 +763,5 @@ if __name__ == "__main__":
         print(f"   Intent: {result['intent']}")
         print(f"   Reasoning: {result['reasoning']}")
         if result['is_legitimate_criticism']:
-            print(f"   ✅ Legitimate criticism")
+            print(f"    Legitimate criticism")
         print("-" * 60)

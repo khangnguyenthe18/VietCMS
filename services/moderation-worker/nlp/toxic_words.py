@@ -469,6 +469,7 @@ TOXIC_PATTERNS = [
     r'\b(?:bao\s*nhiêu|giá)\s+(?:một|1)\s+đêm\b',
     
     # ===== "NGU" + CONTEXT (INSULTS) =====
+    r'\b(?:thằng|con|đứa|kẻ|bọn|đồ)\s+.*?\s+n[gq]u\b',
     r'\bn[gq]u\s+(?:như|thế|thí|vậy|không|quá|vcl|vl|người|xuẩn|si|vãi)',
     r'\bn[gq]u\s+(?:vãi|vl|vcl|vkl)\s*(?:l[oồ]n|cứt|chó)',
     r'(?:đầu|óc|não)\s+(?:lợn|chó|bò|đất|gối|cá\s*vàng|gà)',
